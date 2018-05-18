@@ -17,6 +17,8 @@ public:
 	//Input functions
 	void Move_XAxis(float AxisValue);
 	void Move_YAxis(float AxisValue);
+	void Rotate_YAxis(float AxisValue);
+	void Rotate_XAxis(float AxisValue);
 	void StartGrowing();
 	void StopGrowing();
 

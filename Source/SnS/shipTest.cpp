@@ -2,6 +2,7 @@
 
 #include "shipTest.h"
 #include "Camera/CameraComponent.h"
+#include "Engine.h"
 
 
 // Sets default values
@@ -35,6 +36,14 @@ void AshipTest::Move_YAxis(float AxisValue)
 {
 	// Move at 100 units per second right or left
 	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+}
+
+void AshipTest::Rotate_XAxis(float AxisValue) {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, AxisValue);
+}
+
+void AshipTest::Rotate_YAxis(float AxisValue) {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, AxisValue);
 }
 
 void AshipTest::StartGrowing()
@@ -81,6 +90,11 @@ void AshipTest::Tick(float DeltaTime)
 		{
 			FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
 			SetActorLocation(NewLocation);
+			
+			/*FRotator ActorRotation = this->GetActorRotation();
+			ActorRotation.Pitch += 10.0f;
+			this->SetActorRotation(ActorRotation);*/
+
 		}
 	}
 }
@@ -96,5 +110,9 @@ void AshipTest::SetupPlayerInputComponent(UInputComponent* InputComponent)
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
 	InputComponent->BindAxis("MoveX", this, &AshipTest::Move_XAxis);
 	InputComponent->BindAxis("MoveY", this, &AshipTest::Move_YAxis);
+
+	// PNMDSC
+	InputComponent->BindAxis("RotX", this, &AshipTest::Rotate_XAxis);
+	InputComponent->BindAxis("RotY", this, &AshipTest::Rotate_YAxis);
 }
 
