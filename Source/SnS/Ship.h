@@ -4,33 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "shipTest.generated.h"
+#include "Ship.generated.h"
 
 UCLASS()
-class SNS_API AshipTest : public APawn
-{
+class SNS_API AShip : public APawn {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AshipTest();
+	AShip();
 	//Input functions
 	void Move_XAxis(float AxisValue);
 	void Move_YAxis(float AxisValue);
-	void Rotate_YAxis(float AxisValue);
-	void Rotate_XAxis(float AxisValue);
+	void ChangePitch(float AxisValue);
+	void ChangeRoll(float AxisValue);
 	void StartGrowing();
 	void StopGrowing();
 
 	//Input variables
 	FVector CurrentVelocity;
+	FRotator CurrentRotation;
 	bool bGrowing;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -38,6 +38,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere)
-	USceneComponent* OurVisibleComponent;
-	
+		USceneComponent* OurVisibleComponent;
+
 };
