@@ -1,9 +1,0 @@
-﻿  floatTest.cpp
-c:\users\gustavo\dev\tori\superslackspaceshuttles\source\sns\floattest.h(5): fatal error C1083: Cannot open include file: 'CoreMinimal.h': No such file or directory
-  shipTest.cpp
-c:\users\gustavo\dev\tori\superslackspaceshuttles\source\sns\shiptest.h(5): fatal error C1083: Cannot open include file: 'CoreMinimal.h': No such file or directory
-  SnS.cpp
-c:\users\gustavo\dev\tori\superslackspaceshuttles\source\sns\sns.h(5): fatal error C1083: Cannot open include file: 'CoreMinimal.h': No such file or directory
-  SnSGameModeBase.cpp
-c:\users\gustavo\dev\tori\superslackspaceshuttles\source\sns\snsgamemodebase.h(5): fatal error C1083: Cannot open include file: 'CoreMinimal.h': No such file or directory
-  Generating Code...
