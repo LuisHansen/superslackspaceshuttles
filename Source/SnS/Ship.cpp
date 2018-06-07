@@ -94,11 +94,11 @@ void AShip::SetupPlayerInputComponent(UInputComponent* InputComponent) {
 	InputComponent->BindAction("Grow", IE_Released, this, &AShip::StopGrowing);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
-	InputComponent->BindAxis("MoveX", this, &AShip::Move_XAxis);
-	InputComponent->BindAxis("MoveY", this, &AShip::Move_YAxis);
+	InputComponent->BindAxis("ArrowForward", this, &AShip::Move_XAxis);
+	InputComponent->BindAxis("ArrowSideways", this, &AShip::ChangeRoll);
 
 	// PNMDSC
-	InputComponent->BindAxis("MouseX", this, &AShip::ChangeRoll);
+	InputComponent->BindAxis("MouseX", this, &AShip::Move_YAxis);
 	InputComponent->BindAxis("MouseY", this, &AShip::ChangePitch);
 }
 
