@@ -22,17 +22,25 @@ AShip::AShip() {
 	OurCamera->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
 	OurCamera->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
 	OurVisibleComponent->SetupAttachment(RootComponent);
-
 }
 
-void AShip::Move_XAxis(float AxisValue) {
+void AShip::Thrust(float intensity) {
+	float accelerationIntensity = FMath::Clamp(intensity, -1.0f, 1.0f);
+
 	// Move at 100 units per second forward or backward
-	CurrentVelocity.X = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+	if (this->stopped()) {
+		CurrentVelocity.X = 0.2f * intensity;
+	} else {
+		CurrentVelocity.X *= FMath::Pow(1.15f, accelerationIntensity);
+	}
+	
+	// TODO: Fix acceleration
+	CurrentVelocity.X = FMath::Min<float>(CurrentVelocity.X, MAX_VELOCITY);
 }
 
-void AShip::Move_YAxis(float AxisValue) {
+void AShip::RotateShip(float magnitude) {
 	// Move at 100 units per second right or left
-	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f) * 100.0f;
+	CurrentRotation.Yaw += 10.f * magnitude;
 }
 
 void AShip::ChangeRoll(float AxisValue) {
@@ -51,10 +59,18 @@ void AShip::StopGrowing() {
 	bGrowing = false;
 }
 
+FVector AShip::GetProjectedVelocity() {
+	return this->GetActorForwardVector() * CurrentVelocity.X;
+}
+
+bool AShip::stopped() {
+	return FMath::Abs(CurrentVelocity.X) < 0.1f;
+}
+
 // Called when the game starts or when spawned
 void AShip::BeginPlay() {
 	Super::BeginPlay();
-	CurrentVelocity.X = 100.0F;
+	CurrentVelocity.X = 0.0F;
 
 }
 
@@ -68,7 +84,7 @@ void AShip::Tick(float DeltaTime) {
 	GEngine->AddOnScreenDebugMessage(-2, 1.5, FColor::Red , "ROTATION");
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->CurrentRotation.ToString());
 	this->AddActorLocalRotation(this->CurrentRotation);
-	SetActorLocation(GetActorLocation() + this->GetActorForwardVector());
+	SetActorLocation(GetActorLocation() + this->GetProjectedVelocity());
 	this->CurrentRotation = FRotator(0.f, 0.f, 0.f);
 	/*
 	// Handle movement based on our "MoveX" and "MoveY" axes
@@ -94,11 +110,11 @@ void AShip::SetupPlayerInputComponent(UInputComponent* InputComponent) {
 	InputComponent->BindAction("Grow", IE_Released, this, &AShip::StopGrowing);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
-	InputComponent->BindAxis("ArrowForward", this, &AShip::Move_XAxis);
+	InputComponent->BindAxis("ArrowForward", this, &AShip::Thrust);
 	InputComponent->BindAxis("ArrowSideways", this, &AShip::ChangeRoll);
 
 	// PNMDSC
-	InputComponent->BindAxis("MouseX", this, &AShip::Move_YAxis);
+	InputComponent->BindAxis("MouseX", this, &AShip::RotateShip);
 	InputComponent->BindAxis("MouseY", this, &AShip::ChangePitch);
 }
 

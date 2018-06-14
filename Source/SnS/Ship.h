@@ -15,16 +15,23 @@ public:
 	AShip();
 	//Input functions
 	void Move_XAxis(float AxisValue);
-	void Move_YAxis(float AxisValue);
+	void RotateShip(float magnitude);
+	void Thrust(float intensity);
 	void ChangePitch(float AxisValue);
 	void ChangeRoll(float AxisValue);
 	void StartGrowing();
 	void StopGrowing();
 
+	FVector GetProjectedVelocity();
+	bool stopped();
+
 	//Input variables
 	FVector CurrentVelocity;
 	FRotator CurrentRotation;
 	bool bGrowing;
+
+	// Constants
+	int MAX_VELOCITY = 200.0f;
 
 protected:
 	// Called when the game starts or when spawned
