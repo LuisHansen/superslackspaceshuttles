@@ -81,8 +81,8 @@ void AShip::Tick(float DeltaTime) {
 		float CurrentScale = OurVisibleComponent->GetComponentScale().X;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-2, 1.5, FColor::Red , "ROTATION");
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->CurrentRotation.ToString());
+	// GEngine->AddOnScreenDebugMessage(-2, 1.5, FColor::Red , "ROTATION");
+	// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->CurrentRotation.ToString());
 	this->AddActorLocalRotation(this->CurrentRotation);
 	SetActorLocation(GetActorLocation() + this->GetProjectedVelocity());
 	this->CurrentRotation = FRotator(0.f, 0.f, 0.f);
