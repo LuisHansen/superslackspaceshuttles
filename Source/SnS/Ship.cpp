@@ -36,6 +36,9 @@ void AShip::Thrust(float intensity) {
 		CurrentVelocity.X *= FMath::Pow(1.15f, directionCoefficient * accelerationIntensity);
 	}
 	
+	if (isStopped()) {
+		CurrentVelocity.X = 0.0f;
+	}
 	CurrentVelocity.X = FMath::Clamp<float>(CurrentVelocity.X, -MAX_VELOCITY, MAX_VELOCITY);
 }
 
