@@ -23,7 +23,8 @@ public:
 	void StopGrowing();
 
 	FVector GetProjectedVelocity();
-	bool stopped();
+	bool isStopped();
+	bool isGoingForward();
 
 	//Input variables
 	FVector CurrentVelocity;
