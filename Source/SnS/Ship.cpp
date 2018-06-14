@@ -28,14 +28,15 @@ void AShip::Thrust(float intensity) {
 	float accelerationIntensity = FMath::Clamp(intensity, -1.0f, 1.0f);
 
 	// Move at 100 units per second forward or backward
-	if (this->stopped()) {
+	if (this->isStopped()) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, "STOPPED");
 		CurrentVelocity.X = 0.2f * intensity;
 	} else {
-		CurrentVelocity.X *= FMath::Pow(1.15f, accelerationIntensity);
+		int directionCoefficient = this->isGoingForward() ? 1.0f : -1.0f;
+		CurrentVelocity.X *= FMath::Pow(1.15f, directionCoefficient * accelerationIntensity);
 	}
 	
-	// TODO: Fix acceleration
-	CurrentVelocity.X = FMath::Min<float>(CurrentVelocity.X, MAX_VELOCITY);
+	CurrentVelocity.X = FMath::Clamp<float>(CurrentVelocity.X, -MAX_VELOCITY, MAX_VELOCITY);
 }
 
 void AShip::RotateShip(float magnitude) {
@@ -63,8 +64,12 @@ FVector AShip::GetProjectedVelocity() {
 	return this->GetActorForwardVector() * CurrentVelocity.X;
 }
 
-bool AShip::stopped() {
-	return FMath::Abs(CurrentVelocity.X) < 0.1f;
+bool AShip::isStopped() {
+	return FMath::Abs(CurrentVelocity.X) < 0.2f;
+}
+
+bool AShip::isGoingForward() {
+	return CurrentVelocity.X > 0;
 }
 
 // Called when the game starts or when spawned
@@ -81,9 +86,10 @@ void AShip::Tick(float DeltaTime) {
 		float CurrentScale = OurVisibleComponent->GetComponentScale().X;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-2, 1.5, FColor::Red , "ROTATION");
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->CurrentRotation.ToString());
-	this->AddActorLocalRotation(this->CurrentRotation);
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red , this->CurrentVelocity.ToString());
+	if (!isStopped()) {
+		this->AddActorLocalRotation(this->CurrentRotation);
+	}
 	SetActorLocation(GetActorLocation() + this->GetProjectedVelocity());
 	this->CurrentRotation = FRotator(0.f, 0.f, 0.f);
 	/*
