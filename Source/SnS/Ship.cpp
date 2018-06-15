@@ -25,17 +25,21 @@ AShip::AShip() {
 }
 
 void AShip::Thrust(float intensity) {
+	if (isWarping) return;
+
 	float accelerationIntensity = FMath::Clamp(intensity, -1.0f, 1.0f);
 
 	// Move at 100 units per second forward or backward
 	if (this->isStopped()) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, "STOPPED");
 		CurrentVelocity.X = 0.2f * intensity;
 	} else {
 		int directionCoefficient = this->isGoingForward() ? 1.0f : -1.0f;
 		CurrentVelocity.X *= FMath::Pow(1.15f, directionCoefficient * accelerationIntensity);
 	}
 	
+	if (isStopped()) {
+		CurrentVelocity.X = 0.0f;
+	}
 	CurrentVelocity.X = FMath::Clamp<float>(CurrentVelocity.X, -MAX_VELOCITY, MAX_VELOCITY);
 }
 
@@ -52,12 +56,22 @@ void AShip::ChangePitch(float AxisValue) {
 	CurrentRotation.Pitch += 10.f * AxisValue;
 }
 
-void AShip::StartGrowing() {
-	bGrowing = true;
+void AShip::SpaceBarPressed() {
+	this->warp();
 }
 
-void AShip::StopGrowing() {
-	bGrowing = false;
+void AShip::SpaceBarReleased() {
+	this->stopWarp();
+}
+
+void AShip::warp() {
+	isWarping = true;
+	CurrentVelocity.X = WARP_SPEED;
+}
+
+void AShip::stopWarp() {
+	isWarping = false;
+	CurrentVelocity.X = MAX_VELOCITY;
 }
 
 FVector AShip::GetProjectedVelocity() {
@@ -86,10 +100,11 @@ void AShip::Tick(float DeltaTime) {
 		float CurrentScale = OurVisibleComponent->GetComponentScale().X;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red , this->CurrentVelocity.ToString());
 	if (!isStopped()) {
 		this->AddActorLocalRotation(this->CurrentRotation);
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentVelocity.ToString());
 	SetActorLocation(GetActorLocation() + this->GetProjectedVelocity());
 	this->CurrentRotation = FRotator(0.f, 0.f, 0.f);
 	/*
@@ -112,8 +127,8 @@ void AShip::Tick(float DeltaTime) {
 void AShip::SetupPlayerInputComponent(UInputComponent* InputComponent) {
 	Super::SetupPlayerInputComponent(InputComponent);
 	// Respond when our "Grow" key is pressed or released.
-	InputComponent->BindAction("Grow", IE_Pressed, this, &AShip::StartGrowing);
-	InputComponent->BindAction("Grow", IE_Released, this, &AShip::StopGrowing);
+	InputComponent->BindAction("SpaceBar", IE_Pressed, this, &AShip::SpaceBarPressed);
+	InputComponent->BindAction("SpaceBar", IE_Released, this, &AShip::SpaceBarReleased);
 
 	// Respond every frame to the values of our two movement axes, "MoveX" and "MoveY".
 	InputComponent->BindAxis("ArrowForward", this, &AShip::Thrust);
