@@ -19,9 +19,11 @@ public:
 	void Thrust(float intensity);
 	void ChangePitch(float AxisValue);
 	void ChangeRoll(float AxisValue);
-	void StartGrowing();
-	void StopGrowing();
+	void SpaceBarPressed();
+	void SpaceBarReleased();
 
+	void warp();
+	void stopWarp();
 	FVector GetProjectedVelocity();
 	bool isStopped();
 	bool isGoingForward();
@@ -29,10 +31,11 @@ public:
 	//Input variables
 	FVector CurrentVelocity;
 	FRotator CurrentRotation;
-	bool bGrowing;
+	bool isWarping;
 
 	// Constants
 	int MAX_VELOCITY = 200.0f;
+	float WARP_SPEED = 100000.0f;
 
 protected:
 	// Called when the game starts or when spawned
