@@ -66,6 +66,7 @@ void AShip::SpaceBarReleased() {
 
 void AShip::warp() {
 	isWarping = true;
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "WRAPPING");
 	CurrentVelocity.X = WARP_SPEED;
 }
 
@@ -104,7 +105,7 @@ void AShip::Tick(float DeltaTime) {
 		this->AddActorLocalRotation(this->CurrentRotation);
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentVelocity.ToString());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, CurrentVelocity.ToString());
 	SetActorLocation(GetActorLocation() + this->GetProjectedVelocity());
 	this->CurrentRotation = FRotator(0.f, 0.f, 0.f);
 	/*
